@@ -18,7 +18,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
       counter++;
       chrome.storage.local.set({sessionCounter: counter});
       
-      if (counter >= 2) {
+      if (counter >= 50) {
         resetApp();
       }
     });
@@ -33,3 +33,11 @@ function resetApp() {
     });
   });
 }
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "login") {
+    chrome.storage.local.set({sessionActive: true, sessionCounter: 0}, () => {
+      chrome.tabs.create({url: 'app.html'});
+    });
+  }
+});

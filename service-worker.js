@@ -8,6 +8,7 @@ self.addEventListener('install', (event) => {
         'index.html',
         'app.html',
         'manifest.json',
+        'background.js',
         'assets/icon.png',
         'assets/gmail.png',
         'assets/commonapp.png',

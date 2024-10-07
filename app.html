@@ -90,13 +90,12 @@
 
   <script>
     // Check if the session is still valid
-    const sessionExpiration = localStorage.getItem('sessionExpiration');
-    const currentTime = new Date().getTime();
-    
-    if (!sessionExpiration || currentTime > sessionExpiration) {
-      alert('Session expired. Please log in again.');
-      window.location.href = 'index.html'; // Redirect to login page
-    }
+    chrome.storage.local.get(['sessionActive', 'sessionCounter'], (result) => {
+      if (!result.sessionActive || result.sessionCounter >= 50) {
+        alert('Session expired. Please log in again.');
+        window.location.href = 'index.html'; // Redirect to login page
+      }
+    });
 
     const allowedDomains = [
       'mail.google.com',

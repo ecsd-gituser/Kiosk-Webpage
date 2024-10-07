@@ -66,32 +66,36 @@
         <h1>Welcome to ECSD Kiosk Browser</h1>
         <p>Please enter the OTP to access the app:</p>
         <input type="text" id="otp" placeholder="Enter OTP" maxlength="6">
-        <button id="loginButton">Login</button>
+        <button id="loginButton" onclick="validateOTP()">Login</button>
         <p id="error-message" class="error"></p>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const loginButton = document.getElementById('loginButton');
-            if (loginButton) {
-                loginButton.addEventListener('click', validateOTP);
-            }
-        });
-
         function validateOTP() {
+            console.log("Login button clicked");  // Logging the click event
+            alert("Login button clicked");        // Fallback alert for kiosk mode
+            
             const enteredOTP = document.getElementById('otp').value;
-            const secretKey = 'JBSWY3DPEHPK3PXP'; // Your secret key
-            
-            console.log('Entered OTP:', enteredOTP);
-            
+            console.log("Entered OTP: " + enteredOTP);
+            alert("Entered OTP: " + enteredOTP);   // Fallback alert
+
+            const secretKey = 'JBSWY3DPEHPK3PXP'; // Replace with your actual secret key
             const generatedOTP = generateTOTP(secretKey);
-            console.log('Generated OTP:', generatedOTP);
+            
+            console.log("Generated OTP: " + generatedOTP);
+            alert("Generated OTP: " + generatedOTP);  // Fallback alert
 
             if (enteredOTP === generatedOTP) {
-                console.log('OTP validated successfully');
-                chrome.runtime.sendMessage({action: "login"});
+                // Set session expiration to 50 minutes (in milliseconds)
+                const expirationTime = new Date().getTime() + 50 * 60 * 1000;
+                localStorage.setItem('sessionExpiration', expirationTime);
+
+                console.log("OTP validated, redirecting...");
+                alert("OTP validated, redirecting...");  // Fallback alert
+                
+                // Redirect to app.html
+                window.location.href = 'app.html';
             } else {
-                console.log('Invalid OTP');
                 document.getElementById('error-message').textContent = 'Invalid OTP, please try again.';
             }
         }
@@ -120,7 +124,10 @@
             return otp.padStart(digits, '0');
         }
 
-        function dec2hex(s) { return (s < 15.5 ? '0' : '') + Math.round(s).toString(16); }
+        function dec2hex(s) {
+            return (s < 15.5 ? '0' : '') + Math.round(s).toString(16);
+        }
+
         function leftpad(str, len, pad) {
             if (len + 1 >= str.length) {
                 str = Array(len + 1 - str.length).join(pad) + str;

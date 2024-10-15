@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -66,21 +66,29 @@
         <h1>Welcome to ECSD Kiosk Browser</h1>
         <p>Please enter the OTP to access the app:</p>
         <input type="text" id="otp" placeholder="Enter OTP" maxlength="6">
-        <button id="loginButton" onclick="validateOTP()">Login</button>
+        <button id="loginButton">Login</button>
         <p id="error-message" class="error"></p>
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginButton = document.getElementById('loginButton');
+            if (loginButton) {
+                loginButton.addEventListener('click', validateOTP);
+            }
+        });
+
         function validateOTP() {
             const enteredOTP = document.getElementById('otp').value;
-            const secretKey = 'JBSWY3DPEHPK3PXP'; // Replace with your actual secret key
+            const secretKey = 'JBSWY3DPEHPK3PXP'; // Replace with your secret key
+            
             const generatedOTP = generateTOTP(secretKey);
 
             if (enteredOTP === generatedOTP) {
                 // Set session expiration to 50 minutes (in milliseconds)
                 const expirationTime = new Date().getTime() + 50 * 60 * 1000;
                 localStorage.setItem('sessionExpiration', expirationTime);
-
+                
                 // Redirect to app.html
                 window.location.href = 'app.html';
             } else {
@@ -112,10 +120,7 @@
             return otp.padStart(digits, '0');
         }
 
-        function dec2hex(s) {
-            return (s < 15.5 ? '0' : '') + Math.round(s).toString(16);
-        }
-
+        function dec2hex(s) { return (s < 15.5 ? '0' : '') + Math.round(s).toString(16); }
         function leftpad(str, len, pad) {
             if (len + 1 >= str.length) {
                 str = Array(len + 1 - str.length).join(pad) + str;

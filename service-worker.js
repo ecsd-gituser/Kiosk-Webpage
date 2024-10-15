@@ -46,3 +46,20 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+// Background script (service worker)
+
+let autoCloseTimer;
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'startAutoClose') {
+    clearTimeout(autoCloseTimer);
+    autoCloseTimer = setTimeout(() => {
+      chrome.tabs.remove(sender.tab.id);
+    }, 10000); // 10 seconds
+    sendResponse({status: 'Timer started'});
+  } else if (message.action === 'cancelAutoClose') {
+    clearTimeout(autoCloseTimer);
+    sendResponse({status: 'Timer cancelled'});
+  }
+  return true; // Keeps the message channel open for asynchronous response
+});

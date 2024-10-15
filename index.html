@@ -77,12 +77,13 @@
             const generatedOTP = generateTOTP(secretKey);
 
             if (enteredOTP === generatedOTP) {
-                // Set session expiration to 50 minutes (in milliseconds)
-                const expirationTime = new Date().getTime() + 50 * 60 * 1000;
-                localStorage.setItem('sessionExpiration', expirationTime);
-
-                // Redirect to app.html
-                window.location.href = 'app.html';
+                chrome.runtime.sendMessage({action: "login"}, function(response) {
+                    if (response && response.success) {
+                        window.location.href = 'app.html';
+                    } else {
+                        document.getElementById('error-message').textContent = 'Failed to initialize session. Please try again.';
+                    }
+                });
             } else {
                 document.getElementById('error-message').textContent = 'Invalid OTP, please try again.';
             }

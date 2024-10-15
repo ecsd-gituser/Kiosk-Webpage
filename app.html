@@ -96,6 +96,7 @@
                 window.location.href = 'index.html';
             } else {
                 console.log('Session is valid');
+                startActivityTracking();
             }
         });
 
@@ -131,6 +132,20 @@
                     });
                 }
             });
+        }
+
+        function startActivityTracking() {
+            function updateActivity() {
+                chrome.runtime.sendMessage({action: "updateActivity"});
+            }
+
+            // Update activity on user interactions
+            ['click', 'touchstart', 'mousemove'].forEach(evt => 
+                document.addEventListener(evt, updateActivity, true)
+            );
+
+            // Update activity every minute as a fallback
+            setInterval(updateActivity, 60000);
         }
 
         // Check session status every 30 seconds

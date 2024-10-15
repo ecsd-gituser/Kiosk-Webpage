@@ -6,24 +6,54 @@
     <meta name="theme-color" content="#ffffff">
     <title>Welcome to ECSD Kiosk Browser</title>
     <style>
-        /* ... existing styles ... */
-        .sign-out-button {
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .icon {
+            width: 100px;
+            margin: 20px;
+            transition: transform 0.2s;
+        }
+        .icon:hover {
+            transform: scale(1.1);
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .back-button {
             position: absolute;
             top: 20px;
-            right: 20px;
+            left: 20px;
             cursor: pointer;
-            font-size: 16px;
-            background-color: #f44336;
-            color: white;
+            font-size: 24px;
+            background: transparent;
             border: none;
-            padding: 10px 15px;
+            color: #007BFF;
+        }
+        marquee {
+            background-color: #e7f3fe;
+            color: #31708f;
+            font-size: 18px;
+            padding: 10px;
+            margin-top: 20px;
+            border: 1px solid #bce8f1;
             border-radius: 5px;
+        }
+        .logo {
+            width: 150px;
         }
     </style>
 </head>
 <body>
     <button class="back-button" onclick="goBack()">&#x2190;</button>
-    <button class="sign-out-button" onclick="signOut()">Sign Out</button>
 
     <h1>Welcome to ECSD Kiosk Browser</h1>
 
@@ -34,7 +64,26 @@
     </marquee>
 
     <div class="container">
-        <!-- ... existing app icons ... -->
+        <a href="https://mail.google.com">
+            <img src="assets/gmail.png" class="icon" alt="Gmail">
+            <p>Gmail</p>
+        </a>
+        <a href="https://www.commonapp.org">
+            <img src="assets/commonapp.png" class="icon" alt="CommonApp">
+            <p>CommonApp</p>
+        </a>
+        <a href="https://www.yahoo.com">
+            <img src="assets/yahoo.png" class="icon" alt="Yahoo">
+            <p>Yahoo</p>
+        </a>
+        <a href="https://www.collegeboard.org">
+            <img src="assets/collegeboard.png" class="icon" alt="CollegeBoard">
+            <p>CollegeBoard</p>
+        </a>
+        <a href="https://www.icloud.com">
+            <img src="assets/icloud.png" class="icon" alt="iCloud">
+            <p>iCloud</p>
+        </a>
     </div>
 
     <script>
@@ -62,14 +111,6 @@
             window.history.back();
         }
 
-        function signOut() {
-            chrome.runtime.sendMessage({action: "signOut"}, function(response) {
-                if (response && response.success) {
-                    window.location.href = 'index.html';
-                }
-            });
-        }
-
         document.addEventListener('click', function (e) {
             const target = e.target.closest('a');
             if (target) {
@@ -81,19 +122,22 @@
             }
         });
 
-        // Check for sign-out flag
-        function checkSignOut() {
-            if (localStorage.getItem('kioskSignedOut') === 'true') {
-                localStorage.removeItem('kioskSignedOut');
-                signOut();
-            }
+        function checkSessionStatus() {
+            chrome.storage.sync.get(['kioskSessionEnded'], function(result) {
+                if (result.kioskSessionEnded) {
+                    chrome.storage.sync.remove('kioskSessionEnded', function() {
+                        alert('The session has been ended by the teacher.');
+                        window.location.href = 'index.html'; // Redirect to OTP login page
+                    });
+                }
+            });
         }
 
-        // Check for sign-out every 5 seconds
-        setInterval(checkSignOut, 5000);
+        // Check session status every 30 seconds
+        setInterval(checkSessionStatus, 30000);
 
         // Also check on page load
-        checkSignOut();
+        checkSessionStatus();
     </script>
 </body>
 </html>

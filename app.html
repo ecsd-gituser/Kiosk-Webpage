@@ -91,6 +91,11 @@
   <script>
     console.log('App page loaded');
 
+    let logoutTimer = setTimeout(() => {
+      console.log('Timer expired, redirecting to logout page');
+      window.location.href = 'logout.html';
+    }, 60000); // 1 minute
+
     const allowedDomains = [
       'mail.google.com',
       'www.commonapp.org',

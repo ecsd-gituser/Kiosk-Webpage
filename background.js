@@ -16,32 +16,23 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     });
   }
 });
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('Message received:', message);
   if (message.action === "startTimer") {
-    console.log('Starting timer');
     clearTimeout(logoutTimer);
     logoutTimer = setTimeout(() => {
-      console.log('Timer expired, redirecting to logout page');
-      chrome.tabs.query({}, function(tabs) {
+      chrome.tabs.query({}, (tabs) => {
         tabs.forEach(tab => {
           chrome.tabs.update(tab.id, {url: 'logout.html'});
         });
       });
     }, 60000); // 1 minute
     sendResponse({status: "Timer started"});
-  }
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('Message received:', message);
-  if (message.action === "resetTimer") {
-    console.log('Resetting session expiration timer');
+  } else if (message.action === "resetTimer") {
     chrome.alarms.clear('sessionExpiration', (wasCleared) => {
-      console.log('Previous alarm cleared:', wasCleared);
       chrome.alarms.create('sessionExpiration', { delayInMinutes: 1 });
-      console.log('New alarm created');
       sendResponse({status: "Timer reset"});
     });
-    return true; // Indicates that the response is sent asynchronously
+    return true;
   }
 });

@@ -6,22 +6,15 @@
   "manifest_version": 2,
   "kiosk_enabled": true,
   "kiosk_only": true,
+  "permissions": ["tabs"],
+  "web_accessible_resources": ["app.html", "logout.html"],
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#ffffff",
-  "icons": [
-    {
-      "src": "assets/icon.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "assets/icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ],
-  "permissions": ["tabs"],
-  "web_accessible_resources": ["app.html", "logout.html"]
+  "theme_color": "#ffffff"
 }

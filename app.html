@@ -91,48 +91,11 @@
   <script>
     console.log('App page loaded');
 
-    let logoutTimer;
-    const logoutDuration = 60000; // 1 minute
-    const idleDuration = 80000; // 30 secs minutes
-
-    function startLogoutTimer() {
-      logoutTimer = setTimeout(() => {
-        console.log('Session expired due to inactivity. Redirecting to logout page...');
-        window.location.href = 'logout.html'; // Redirect to logout page
-      }, logoutDuration);
-    }
-
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      startLogoutTimer();
-    }
-
-    // Start the logout timer on load
-    startLogoutTimer();
-
-    // Reset the timer on user activity
-    document.addEventListener('mousemove', resetLogoutTimer);
-    document.addEventListener('keypress', resetLogoutTimer);
-    document.addEventListener('click', resetLogoutTimer);
-
-    // Check for user idle time
-    let idleTimer = setTimeout(() => {
-      console.log('User is idle for 2 minutes. Redirecting to logout page...');
-      window.location.href = 'logout.html'; // Redirect to logout page after idle
-    }, idleDuration);
-
-    function resetIdleTimer() {
-      clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => {
-        console.log('User is idle for 2 minutes. Redirecting to logout page...');
-        window.location.href = 'logout.html'; // Redirect to logout page after idle
-      }, idleDuration);
-    }
-
-    // Reset the idle timer on user activity
-    document.addEventListener('mousemove', resetIdleTimer);
-    document.addEventListener('keypress', resetIdleTimer);
-    document.addEventListener('click', resetIdleTimer);
+    // Set a timer to log out after exactly 1 minute
+    setTimeout(() => {
+      console.log('Session expired. Redirecting to logout page...');
+      window.location.href = 'logout.html';
+    }, 60000); // 60000 milliseconds = 1 minute
 
     // Function to prevent navigation to restricted domains
     document.addEventListener('click', function (e) {

@@ -16,6 +16,21 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     });
   }
 });
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log('Message received:', message);
+  if (message.action === "startTimer") {
+    console.log('Starting timer');
+    clearTimeout(logoutTimer);
+    logoutTimer = setTimeout(() => {
+      console.log('Timer expired, redirecting to logout page');
+      chrome.tabs.query({}, function(tabs) {
+        tabs.forEach(tab => {
+          chrome.tabs.update(tab.id, {url: 'logout.html'});
+        });
+      });
+    }, 60000); // 1 minute
+    sendResponse({status: "Timer started"});
+  }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('Message received:', message);

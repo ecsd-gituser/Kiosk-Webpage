@@ -91,43 +91,33 @@
   <script>
     console.log('App page loaded');
 
-    // Set a timer to log out after exactly 1 minute
-    const logoutTimeout = setTimeout(() => {
-      console.log('Session expired. Redirecting to logout page...');
+    let logoutTimer = setTimeout(() => {
+      console.log('Timer expired, redirecting to logout page');
       window.location.href = 'logout.html';
-    }, 60000); // 60000 milliseconds = 1 minute
+    }, 60000); // 1 minute
 
-    // Function to prevent navigation to restricted domains
+    const allowedDomains = [
+      'mail.google.com',
+      'www.commonapp.org',
+      'www.yahoo.com',
+      'www.collegeboard.org',
+      'www.icloud.com'
+    ];
+
+    function goBack() {
+      window.history.back();
+    }
+
     document.addEventListener('click', function (e) {
       const target = e.target.closest('a');
       if (target) {
         const domain = new URL(target.href).hostname;
-        const allowedDomains = [
-          'mail.google.com',
-          'www.commonapp.org',
-          'www.yahoo.com',
-          'www.collegeboard.org',
-          'www.icloud.com'
-        ];
         if (!allowedDomains.includes(domain)) {
           e.preventDefault();
           alert('Access to this domain is restricted.');
         }
       }
     });
-
-    // Detect visibility change (lid close, tab switch, etc.)
-    document.addEventListener('visibilitychange', function () {
-      if (document.visibilityState === 'hidden') {
-        console.log('Document is hidden. Logging out...');
-        clearTimeout(logoutTimeout); // Clear the timeout if the user is logging out
-        window.location.href = 'logout.html'; // Redirect to logout page
-      }
-    });
-
-    function goBack() {
-      window.history.back();
-    }
   </script>
 </body>
-</html>
+</html> 

@@ -98,13 +98,7 @@
 
             if (enteredOTP === generatedOTP) {
                 console.log('OTP validation successful');
-                
-                // Reset the timer here
-                chrome.runtime.sendMessage({action: "resetTimer"}, function(response) {
-                    console.log('Timer reset message sent, response:', response);
-                    // Redirect to app.html after resetting the timer
-                    window.location.href = 'app.html';
-                });
+                window.location.href = 'app.html';
             } else {
                 console.log('OTP validation failed');
                 document.getElementById('error-message').textContent = 'Invalid OTP, please try again.';

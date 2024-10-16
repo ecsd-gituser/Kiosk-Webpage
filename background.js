@@ -1,43 +1,32 @@
+console.log('Background script loaded');
+
 chrome.runtime.onInstalled.addListener(() => {
-  startSessionCounter();
+  console.log('Extension installed. Creating initial alarm.');
+  chrome.alarms.create('sessionExpiration', { delayInMinutes: 1 });
 });
-
-chrome.runtime.onStartup.addListener(() => {
-  startSessionCounter();
-});
-
-function startSessionCounter() {
-  chrome.storage.local.set({sessionCounter: 0});
-  chrome.alarms.create('sessionTick', {periodInMinutes: 1});
-}
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === 'sessionTick') {
-    chrome.storage.local.get('sessionCounter', (result) => {
-      let counter = result.sessionCounter || 0;
-      counter++;
-      chrome.storage.local.set({sessionCounter: counter});
-      
-      if (counter >= 50) {
-        resetApp();
-      }
+  if (alarm.name === 'sessionExpiration') {
+    console.log('Session expiration alarm triggered');
+    chrome.tabs.query({}, (tabs) => {
+      tabs.forEach((tab) => {
+        console.log('Redirecting tab to logout page:', tab.id);
+        chrome.tabs.update(tab.id, { url: 'logout.html' });
+      });
     });
   }
 });
 
-function resetApp() {
-  chrome.storage.local.remove(['sessionCounter', 'sessionActive']);
-  chrome.tabs.query({}, (tabs) => {
-    tabs.forEach((tab) => {
-      chrome.tabs.reload(tab.id);
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log('Message received:', message);
+  if (message.action === "resetTimer") {
+    console.log('Resetting session expiration timer');
+    chrome.alarms.clear('sessionExpiration', (wasCleared) => {
+      console.log('Previous alarm cleared:', wasCleared);
+      chrome.alarms.create('sessionExpiration', { delayInMinutes: 1 });
+      console.log('New alarm created');
+      sendResponse({status: "Timer reset"});
     });
-  });
-}
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "login") {
-    chrome.storage.local.set({sessionActive: true, sessionCounter: 0}, () => {
-      chrome.tabs.create({url: 'app.html'});
-    });
+    return true; // Indicates that the response is sent asynchronously
   }
 });

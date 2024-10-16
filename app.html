@@ -91,33 +91,71 @@
   <script>
     console.log('App page loaded');
 
-    let logoutTimer = setTimeout(() => {
-      console.log('Timer expired, redirecting to logout page');
-      window.location.href = 'logout.html';
-    }, 60000); // 1 minute
+    let logoutTimer;
+    const logoutDuration = 60000; // 1 minute
+    const idleDuration = 120000; // 2 minutes
 
-    const allowedDomains = [
-      'mail.google.com',
-      'www.commonapp.org',
-      'www.yahoo.com',
-      'www.collegeboard.org',
-      'www.icloud.com'
-    ];
-
-    function goBack() {
-      window.history.back();
+    function startLogoutTimer() {
+      logoutTimer = setTimeout(() => {
+        console.log('Session expired due to inactivity. Redirecting to logout page...');
+        window.location.href = 'logout.html'; // Redirect to logout page
+      }, logoutDuration);
     }
 
+    function resetLogoutTimer() {
+      clearTimeout(logoutTimer);
+      startLogoutTimer();
+    }
+
+    // Start the logout timer on load
+    startLogoutTimer();
+
+    // Reset the timer on user activity
+    document.addEventListener('mousemove', resetLogoutTimer);
+    document.addEventListener('keypress', resetLogoutTimer);
+    document.addEventListener('click', resetLogoutTimer);
+
+    // Check for user idle time
+    let idleTimer = setTimeout(() => {
+      console.log('User is idle for 2 minutes. Redirecting to logout page...');
+      window.location.href = 'logout.html'; // Redirect to logout page after idle
+    }, idleDuration);
+
+    function resetIdleTimer() {
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        console.log('User is idle for 2 minutes. Redirecting to logout page...');
+        window.location.href = 'logout.html'; // Redirect to logout page after idle
+      }, idleDuration);
+    }
+
+    // Reset the idle timer on user activity
+    document.addEventListener('mousemove', resetIdleTimer);
+    document.addEventListener('keypress', resetIdleTimer);
+    document.addEventListener('click', resetIdleTimer);
+
+    // Function to prevent navigation to restricted domains
     document.addEventListener('click', function (e) {
       const target = e.target.closest('a');
       if (target) {
         const domain = new URL(target.href).hostname;
+        const allowedDomains = [
+          'mail.google.com',
+          'www.commonapp.org',
+          'www.yahoo.com',
+          'www.collegeboard.org',
+          'www.icloud.com'
+        ];
         if (!allowedDomains.includes(domain)) {
           e.preventDefault();
           alert('Access to this domain is restricted.');
         }
       }
     });
+
+    function goBack() {
+      window.history.back();
+    }
   </script>
 </body>
 </html>

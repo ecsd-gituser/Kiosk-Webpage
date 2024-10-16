@@ -13,6 +13,7 @@
       padding: 0;
       background-color: #f4f4f4;
       color: #333;
+      overflow: hidden; /* Prevents scrollbars from appearing */
     }
     .icon {
       width: 100px;
@@ -50,6 +51,13 @@
     .logo {
       width: 150px;
     }
+    /* Style for the iframe */
+    iframe {
+      width: 95%;
+      height: 80vh; /* Adjust as needed */
+      border: none;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -66,96 +74,62 @@
   </marquee>
 
   <div class="container">
-    <a href="https://mail.google.com">
+    <a href="javascript:void(0);" onclick="loadApp('https://mail.google.com')">
       <img src="assets/gmail.png" class="icon" alt="Gmail">
       <p>Gmail</p>
     </a>
-    <a href="https://www.commonapp.org">
+    <a href="javascript:void(0);" onclick="loadApp('https://www.commonapp.org')">
       <img src="assets/commonapp.png" class="icon" alt="CommonApp">
       <p>CommonApp</p>
     </a>
-    <a href="https://www.yahoo.com">
+    <a href="javascript:void(0);" onclick="loadApp('https://www.yahoo.com')">
       <img src="assets/yahoo.png" class="icon" alt="Yahoo">
       <p>Yahoo</p>
     </a>
-    <a href="https://www.collegeboard.org">
+    <a href="javascript:void(0);" onclick="loadApp('https://www.collegeboard.org')">
       <img src="assets/collegeboard.png" class="icon" alt="CollegeBoard">
       <p>CollegeBoard</p>
     </a>
-    <a href="https://www.icloud.com">
+    <a href="javascript:void(0);" onclick="loadApp('https://www.icloud.com')">
       <img src="assets/icloud.png" class="icon" alt="iCloud">
       <p>iCloud</p>
     </a>
   </div>
 
+  <!-- Iframe to display external applications -->
+  <iframe id="appFrame" src=""></iframe>
+
   <script>
     console.log('App page loaded');
 
-    let logoutTimer;
-    const logoutDuration = 60000; // 1 minute
-    const idleDuration = 30000; // 30 secs minutes
+    let logoutTimer = setTimeout(() => {
+      console.log('Timer expired, redirecting to logout page');
+      window.location.href = 'logout.html';
+    }, 60000); // 1 minute
 
-    function startLogoutTimer() {
-      logoutTimer = setTimeout(() => {
-        console.log('Session expired due to inactivity. Redirecting to logout page...');
-        window.location.href = 'logout.html'; // Redirect to logout page
-      }, logoutDuration);
+    function loadApp(url) {
+      // Load the selected app in the iframe
+      document.getElementById('appFrame').src = url;
     }
 
-    function resetLogoutTimer() {
-      clearTimeout(logoutTimer);
-      startLogoutTimer();
-    }
-
-    // Start the logout timer on load
-    startLogoutTimer();
-
-    // Reset the timer on user activity
-    document.addEventListener('mousemove', resetLogoutTimer);
-    document.addEventListener('keypress', resetLogoutTimer);
-    document.addEventListener('click', resetLogoutTimer);
-
-    // Check for user idle time
+    // Idle detection logic
     let idleTimer = setTimeout(() => {
-      console.log('User is idle for 2 minutes. Redirecting to logout page...');
-      window.location.href = 'logout.html'; // Redirect to logout page after idle
-    }, idleDuration);
+      console.log('Idle time exceeded, redirecting to logout page');
+      window.location.href = 'logout.html';
+    }, 120000); // 2 minutes
 
     function resetIdleTimer() {
       clearTimeout(idleTimer);
       idleTimer = setTimeout(() => {
-        console.log('User is idle for 2 minutes. Redirecting to logout page...');
-        window.location.href = 'logout.html'; // Redirect to logout page after idle
-      }, idleDuration);
+        console.log('Idle time exceeded, redirecting to logout page');
+        window.location.href = 'logout.html';
+      }, 120000); // 2 minutes
     }
 
-    // Reset the idle timer on user activity
+    // Reset idle timer on any user interaction
     document.addEventListener('mousemove', resetIdleTimer);
     document.addEventListener('keypress', resetIdleTimer);
     document.addEventListener('click', resetIdleTimer);
-
-    // Function to prevent navigation to restricted domains
-    document.addEventListener('click', function (e) {
-      const target = e.target.closest('a');
-      if (target) {
-        const domain = new URL(target.href).hostname;
-        const allowedDomains = [
-          'mail.google.com',
-          'www.commonapp.org',
-          'www.yahoo.com',
-          'www.collegeboard.org',
-          'www.icloud.com'
-        ];
-        if (!allowedDomains.includes(domain)) {
-          e.preventDefault();
-          alert('Access to this domain is restricted.');
-        }
-      }
-    });
-
-    function goBack() {
-      window.history.back();
-    }
   </script>
 </body>
 </html>

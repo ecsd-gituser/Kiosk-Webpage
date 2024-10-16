@@ -89,17 +89,7 @@
   </div>
 
   <script>
-    // Check if the session is still valid
-    chrome.storage.local.get(['sessionActive', 'sessionCounter'], (result) => {
-      console.log('Session data:', result);
-      if (!result.sessionActive || result.sessionCounter >= 50) {
-        console.log('Session expired or invalid');
-        alert('Session expired. Please log in again.');
-        window.location.href = 'index.html'; // Redirect to login page
-      } else {
-        console.log('Session is valid');
-      }
-    });
+    console.log('App page loaded');
 
     const allowedDomains = [
       'mail.google.com',

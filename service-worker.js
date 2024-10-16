@@ -1,34 +1,41 @@
-const CACHE_NAME = 'kiosk-cache-v1'; // Change this version when you update assets
+const CACHE_NAME = 'kiosk-cache-v1';
 
-// Registering the service worker
+// List of assets to cache
+const ASSETS_TO_CACHE = [
+  'index.html',
+  'app.html',
+  'logout.html',
+  'background.js',
+  'assets/icon.png',
+  'assets/gmail.png',
+  'assets/commonapp.png',
+  'assets/yahoo.png',
+  'assets/collegeboard.png',
+  'assets/icloud.png',
+  'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js'
+];
+
+// Install event - cache assets
 self.addEventListener('install', (event) => {
+  console.log('Service Worker installing.');
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll([
-        'index.html',
-        'app.html',
-        'manifest.json',
-        'background.js',
-        'assets/icon.png',
-        'assets/gmail.png',
-        'assets/commonapp.png',
-        'assets/yahoo.png',
-        'assets/collegeboard.png',
-        'assets/icloud.png',
-        // Add other assets as needed
-      ]);
-    })
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        console.log('Opened cache');
+        return cache.addAll(ASSETS_TO_CACHE);
+      })
   );
 });
 
-// Cleaning up old caches
+// Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-  const cacheWhitelist = [CACHE_NAME];
+  console.log('Service Worker activating.');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
+          if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
@@ -37,29 +44,44 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetching from the cache
+// Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      // Return cached response or fetch from network
-      return response || fetch(event.request);
-    })
+    caches.match(event.request)
+      .then((response) => {
+        // Cache hit - return response
+        if (response) {
+          return response;
+        }
+
+        // Clone the request because it's a one-time use stream
+        const fetchRequest = event.request.clone();
+
+        return fetch(fetchRequest).then(
+          (response) => {
+            // Check if we received a valid response
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            // Clone the response because it's a one-time use stream
+            const responseToCache = response.clone();
+
+            caches.open(CACHE_NAME)
+              .then((cache) => {
+                cache.put(event.request, responseToCache);
+              });
+
+            return response;
+          }
+        );
+      })
   );
 });
-// Background script (service worker)
 
-let autoCloseTimer;
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === 'startAutoClose') {
-    clearTimeout(autoCloseTimer);
-    autoCloseTimer = setTimeout(() => {
-      chrome.tabs.remove(sender.tab.id);
-    }, 10000); // 10 seconds
-    sendResponse({status: 'Timer started'});
-  } else if (message.action === 'cancelAutoClose') {
-    clearTimeout(autoCloseTimer);
-    sendResponse({status: 'Timer cancelled'});
+// Listen for messages from the main script
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
   }
-  return true; // Keeps the message channel open for asynchronous response
 });

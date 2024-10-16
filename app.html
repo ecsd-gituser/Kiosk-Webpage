@@ -92,7 +92,7 @@
     console.log('App page loaded');
 
     // Set a timer to log out after exactly 1 minute
-    setTimeout(() => {
+    const logoutTimeout = setTimeout(() => {
       console.log('Session expired. Redirecting to logout page...');
       window.location.href = 'logout.html';
     }, 60000); // 60000 milliseconds = 1 minute
@@ -113,6 +113,15 @@
           e.preventDefault();
           alert('Access to this domain is restricted.');
         }
+      }
+    });
+
+    // Detect visibility change (lid close, tab switch, etc.)
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') {
+        console.log('Document is hidden. Logging out...');
+        clearTimeout(logoutTimeout); // Clear the timeout if the user is logging out
+        window.location.href = 'logout.html'; // Redirect to logout page
       }
     });
 

@@ -1,5 +1,3 @@
-console.log('Background script loaded');
-
 let globalTimer;
 
 function startGlobalTimer() {
@@ -7,7 +5,7 @@ function startGlobalTimer() {
   globalTimer = setTimeout(() => {
     chrome.tabs.query({}, (tabs) => {
       tabs.forEach((tab) => {
-        chrome.tabs.update(tab.id, { url: 'index.html' });
+        chrome.tabs.update(tab.id, { url: 'https://ecsd-gituser.github.io/Kiosk-Webpage/' });
       });
     });
   }, 60000); // 1 minute
@@ -20,21 +18,10 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete') {
-    chrome.tabs.executeScript(tabId, {
-      code: `
-        history.pushState(null, null, document.URL);
-        window.addEventListener('popstate', function () {
-          history.pushState(null, null, document.URL);
-        });
-      `
-    });
+    startGlobalTimer();
   }
 });
 
-chrome.tabs.onCreated.addListener(() => {
-  startGlobalTimer();
-});
-
-chrome.tabs.onRemoved.addListener(() => {
+chrome.tabs.onActivated.addListener(() => {
   startGlobalTimer();
 });

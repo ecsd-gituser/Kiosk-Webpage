@@ -1,56 +1,40 @@
 let globalTimer;
 const TIMEOUT_DURATION = 60000; // 1 minute in milliseconds
-const APP_REFERENCE = 'app_ref=ecsd_kiosk';
 
 function startGlobalTimer() {
   clearTimeout(globalTimer);
-  globalTimer = setTimeout(() => {
-    chrome.tabs.query({}, (tabs) => {
-      tabs.forEach((tab) => {
-        chrome.tabs.update(tab.id, { url: 'logout.html' });
-      });
-    });
-  }, TIMEOUT_DURATION);
+  globalTimer = setTimeout(checkAndRedirect, TIMEOUT_DURATION);
 }
 
-function addAppReference(details) {
-  let url = new URL(details.url);
-  if (!url.searchParams.has('app_ref') && !url.pathname.endsWith('index.html') && !url.pathname.endsWith('logout.html')) {
-    url.searchParams.append('app_ref', 'ecsd_kiosk');
-    return { redirectUrl: url.toString() };
-  }
+function checkAndRedirect() {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    if (tabs[0] && !tabs[0].url.includes('index.html')) {
+      chrome.tabs.update(tabs[0].id, {url: 'logout.html'});
+    }
+  });
 }
 
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('Extension installed. Creating initial alarm.');
+  console.log('Extension installed. Starting timer.');
   startGlobalTimer();
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete') {
+    console.log('Tab updated. Resetting timer.');
     startGlobalTimer();
   }
+});
+
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  console.log('Tab activated. Resetting timer.');
+  startGlobalTimer();
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "resetTimer") {
+    console.log('Reset timer message received.');
     startGlobalTimer();
     sendResponse({status: "Timer reset"});
-  }
-});
-
-chrome.webRequest.onBeforeRequest.addListener(
-  addAppReference,
-  {urls: ["<all_urls>"]},
-  ["blocking"]
-);
-
-chrome.webNavigation.onBeforeNavigate.addListener((details) => {
-  if (!details.url.includes(APP_REFERENCE) && 
-      !details.url.includes('index.html') && 
-      !details.url.includes('logout.html')) {
-    chrome.tabs.update(details.tabId, { 
-      url: details.url + (details.url.includes('?') ? '&' : '?') + APP_REFERENCE 
-    });
   }
 });

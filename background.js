@@ -46,6 +46,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "resetTimer") {
     startGlobalTimer();
+  } else if (message.action === "clearTimer") {
+    clearTimeout(globalTimer);
   }
 });
 

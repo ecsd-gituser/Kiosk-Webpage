@@ -22,29 +22,20 @@ function addAppReference(details) {
 }
 
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('Extension installed.');
+  console.log('Extension installed. Creating initial alarm.');
+  startGlobalTimer();
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete') {
-    if (tab.url.includes('index.html')) {
-      console.log('Index page loaded. Starting timer.');
-      startGlobalTimer();
-    }
-  }
-});
-
-chrome.webNavigation.onCommitted.addListener((details) => {
-  if (details.url.includes('index.html')) {
-    console.log('Navigated to index. Resetting timer.');
     startGlobalTimer();
   }
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "indexLoaded") {
-    console.log('Index loaded message received. Starting timer.');
+  if (message.action === "resetTimer") {
     startGlobalTimer();
+    sendResponse({status: "Timer reset"});
   }
 });
 

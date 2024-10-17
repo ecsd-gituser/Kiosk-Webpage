@@ -139,10 +139,6 @@
         }
 
         console.log('Script ended');
-
-        if (chrome && chrome.runtime && chrome.runtime.sendMessage) {
-            chrome.runtime.sendMessage({action: "resetTimer"});
-        }
     </script>
 </body>
 </html>

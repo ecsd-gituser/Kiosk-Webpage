@@ -137,7 +137,7 @@
             }
             return str;
         }
-
+        
         console.log('Script ended');
 
         // Prevent navigation
@@ -152,6 +152,11 @@
             e.preventDefault();
           }
         });
+
+        // Clear any existing timers when reaching the login page
+        if (chrome && chrome.runtime && chrome.runtime.sendMessage) {
+            chrome.runtime.sendMessage({action: "clearTimer"});
+        }
     </script>
 </body>
 </html>

@@ -8,11 +8,10 @@
   "kiosk_only": true,
   "permissions": [
     "tabs",
-    "activeTab",
-    "<all_urls>",
     "webNavigation",
     "webRequest",
-    "webRequestBlocking"
+    "webRequestBlocking",
+    "<all_urls>"
   ],
   "background": {
     "scripts": ["background.js"],

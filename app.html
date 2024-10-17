@@ -91,11 +91,6 @@
   <script>
     console.log('App page loaded');
 
-    let logoutTimer = setTimeout(() => {
-      console.log('Timer expired, redirecting to logout page');
-      window.location.href = 'logout.html';
-    }, 60000); // 1 minute
-
     const allowedDomains = [
       'mail.google.com',
       'www.commonapp.org',
@@ -105,7 +100,7 @@
     ];
 
     function goBack() {
-      window.history.back();
+      // Do nothing to prevent going back
     }
 
     document.addEventListener('click', function (e) {
@@ -115,9 +110,25 @@
         if (!allowedDomains.includes(domain)) {
           e.preventDefault();
           alert('Access to this domain is restricted.');
+        } else {
+          e.preventDefault();
+          window.location.href = target.href;
         }
       }
     });
+
+    // Prevent using backspace to navigate back
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+      }
+    });
+
+    // Prevent navigation
+    history.pushState(null, null, document.URL);
+    window.addEventListener('popstate', function () {
+      history.pushState(null, null, document.URL);
+    });
   </script>
 </body>
-</html> 
+</html>

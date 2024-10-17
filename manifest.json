@@ -9,12 +9,14 @@
   "permissions": [
     "tabs",
     "activeTab",
-    "https://*/*",
-    "http://*/*"
+    "<all_urls>",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking"
   ],
   "background": {
     "scripts": ["background.js"],
-    "persistent": false
+    "persistent": true
   },
   "icons": {
     "16": "assets/icon16.png",

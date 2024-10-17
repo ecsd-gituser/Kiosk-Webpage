@@ -117,17 +117,17 @@
       }
     });
 
+    // Prevent navigation
+    history.pushState(null, null, document.URL);
+    window.addEventListener('popstate', function () {
+      history.pushState(null, null, document.URL);
+    });
+
     // Prevent using backspace to navigate back
     window.addEventListener('keydown', function(e) {
       if (e.key === 'Backspace') {
         e.preventDefault();
       }
-    });
-
-    // Prevent navigation
-    history.pushState(null, null, document.URL);
-    window.addEventListener('popstate', function () {
-      history.pushState(null, null, document.URL);
     });
   </script>
 </body>

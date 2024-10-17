@@ -6,8 +6,16 @@
   "manifest_version": 2,
   "kiosk_enabled": true,
   "kiosk_only": true,
-  "permissions": ["tabs", "activeTab"],
-  "web_accessible_resources": ["app.html", "index.html"],
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "https://*/*",
+    "http://*/*"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
   "icons": {
     "16": "assets/icon16.png",
     "48": "assets/icon48.png",
@@ -16,9 +24,5 @@
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#ffffff",
-  "background": {
-    "scripts": ["background.js"],
-    "persistent": false
-  }
+  "theme_color": "#ffffff"
 }

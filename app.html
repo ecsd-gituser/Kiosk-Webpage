@@ -51,8 +51,7 @@
       width: 150px;
     }
   </style>
-  <script src="content.js" defer>
-  </script>
+  <script src="content.js" defer></script>
 </head>
 <body>
   <button class="back-button" onclick="goBack()">
@@ -92,6 +91,23 @@
 
   <script>
     console.log('App page loaded');
+
+    // Check session timeout
+    const SESSION_TIMEOUT = 60000; // 1 minute in milliseconds
+
+    function checkSession() {
+      const sessionStartTime = parseInt(localStorage.getItem('sessionStartTime') || '0');
+      const currentTime = Date.now();
+      if (currentTime - sessionStartTime >= SESSION_TIMEOUT) {
+        alert('Your session has expired. Please log in again.');
+        window.location.href = 'index.html'; // Redirect to login page
+      }
+    }
+
+    // Run session check on page load
+    window.onload = function() {
+      checkSession();
+    };
 
     function goBack() {
       window.history.back();

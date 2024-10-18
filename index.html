@@ -85,11 +85,9 @@
             const generatedOTP = generateTOTP(secretKey);
 
             if (enteredOTP === generatedOTP) {
-                // Start the session timer after successful login
-                chrome.runtime.sendMessage({ action: "startTimer" }, (response) => {
-                    console.log(response.status);
-                    window.location.href = 'app.html'; // Redirect on success
-                });
+                // Set session start time in localStorage
+                localStorage.setItem('sessionStartTime', Date.now());
+                window.location.href = 'app.html'; // Redirect to the main app
             } else {
                 document.getElementById('error-message').textContent = 'Invalid OTP, please try again.';
             }

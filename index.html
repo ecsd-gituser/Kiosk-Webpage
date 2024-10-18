@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ECSD Kiosk OTP Login</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script src="content.js" defer></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -66,52 +65,37 @@
         <img src="assets/icon.png" alt="ECSD Logo" class="logo">
         <h1>Welcome to ECSD Kiosk Browser</h1>
         <p>Please enter the OTP to access the app:</p>
-        <button onclick="startSession()">Start Session</button>
         <input type="text" id="otp" placeholder="Enter OTP" maxlength="6">
         <button id="loginButton">Login</button>
         <p id="error-message" class="error"></p>
     </div>
 
     <script>
-        console.log('Script started');
-
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM content loaded');
             const loginButton = document.getElementById('loginButton');
             if (loginButton) {
-                console.log('Login button found, attaching click event');
                 loginButton.addEventListener('click', validateOTP);
-            } else {
-                console.error('Login button not found');
             }
         });
 
         function validateOTP() {
-            console.log('validateOTP function called');
-            
             const enteredOTP = document.getElementById('otp').value;
-            console.log('Entered OTP:', enteredOTP);
-            
             const secretKey = 'JBSWY3DPEHPK3PXP'; // Replace with your secret key
-            console.log('Secret Key:', secretKey);
             
             const generatedOTP = generateTOTP(secretKey);
-            console.log('Generated OTP:', generatedOTP);
 
             if (enteredOTP === generatedOTP) {
-                console.log('OTP validation successful');
-                chrome.runtime.sendMessage({action: "startTimer"}, function(response) {
+                // Start the session timer after successful login
+                chrome.runtime.sendMessage({ action: "startTimer" }, (response) => {
                     console.log(response.status);
-                    window.location.href = 'app.html';
+                    window.location.href = 'app.html'; // Redirect on success
                 });
             } else {
-                console.log('OTP validation failed');
                 document.getElementById('error-message').textContent = 'Invalid OTP, please try again.';
             }
         }
 
         function generateTOTP(secret, digits = 6, period = 30) {
-            console.log('Generating TOTP');
             const base32chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
             let bits = '';
             for (let i = 0; i < secret.length; i++) {
@@ -142,8 +126,6 @@
             }
             return str;
         }
-
-        console.log('Script ended');
     </script>
 </body>
 </html>

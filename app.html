@@ -113,13 +113,17 @@
       window.history.back();
     }
 
-    const allowedDomains = ['external-app.html'];
-
+    // Allow any external app to load
     document.addEventListener('click', function (e) {
       const target = e.target.closest('a');
       if (target) {
-        const domain = new URL(target.href).hostname;
-        if (!allowedDomains.includes(domain)) {
+        // No restriction on loading external apps
+        // You might want to ensure that only specific URLs are allowed
+        const appUrl = new URL(target.href).searchParams.get('app');
+        if (appUrl) {
+          // Open the external app
+          window.location.href = target.href; // This loads the external app in the current window
+        } else {
           e.preventDefault();
           alert('Access to this domain is restricted.');
         }

@@ -1,35 +1,17 @@
-// Function to start the session timer
-function startSession() {
-    chrome.runtime.sendMessage({ action: "startTimer" }, (response) => {
-        console.log(response.status);
-    });
-}
-
-// Function to check the session status
-function checkSession() {
-    chrome.runtime.sendMessage({ action: "checkSession" }, (response) => {
-        if (response.sessionExpired) {
-            alert("Your session has expired. You will be logged out.");
-            window.location.href = 'logout.html'; // Redirect to logout page
-        }
-    });
-}
-document.addEventListener("DOMContentLoaded", () => {
-    const loginButton = document.getElementById("loginButton");
-    if (loginButton) {
-        loginButton.addEventListener("click", () => {
-            console.log("Login button clicked");
-            chrome.runtime.sendMessage({ action: "startTimer" });
-            // Redirect to the external app or perform login actions here
-            window.location.href = 'external-app.html'; // Example redirect
-        });
+chrome.runtime.sendMessage({ action: "checkSession" }, (response) => {
+    if (response.sessionActive) {
+        console.log('Session is active');
+    } else {
+        console.log('Session has expired');
+        // Redirect to logout page if session is not active
+        window.location.href = 'logout.html';
     }
 });
 
-
-// Start the session when the page loads
-window.onload = function () {
-    startSession();
-    // Check the session every minute (60000 milliseconds)
-    setInterval(checkSession, 60000);
-};
+// Listen for messages from the background script to start or end sessions
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "endSession") {
+        // Redirect to logout.html when session ends
+        window.location.href = 'logout.html';
+    }
+});

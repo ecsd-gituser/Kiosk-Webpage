@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
+  <title>Welcome to ECSD Kiosk Browser</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    .icon {
+      width: 100px;
+      margin: 20px;
+      transition: transform 0.2s;
+    }
+    .icon:hover {
+      transform: scale(1.1);
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      cursor: pointer;
+      font-size: 24px;
+      background: transparent;
+      border: none;
+      color: #007BFF;
+    }
+    marquee {
+      background-color: #e7f3fe;
+      color: #31708f;
+      font-size: 18px;
+      padding: 10px;
+      margin-top: 20px;
+      border: 1px solid #bce8f1;
+      border-radius: 5px;
+    }
+    .logo {
+      width: 150px;
+    }
+  </style>
+  <script>
+    const SESSION_TIMEOUT = 60000; // 1 minute in milliseconds
+
+    function checkSessionTimeout() {
+        const sessionStartTime = parseInt(localStorage.getItem('sessionStartTime') || '0');
+        const currentTime = Date.now();
+        if (currentTime - sessionStartTime >= SESSION_TIMEOUT) {
+            window.location.href = 'logout.html';
+        } else {
+            setTimeout(checkSessionTimeout, 1000); // Check every second
+        }
+    }
+
+    window.onload = function() {
+        checkSessionTimeout();
+    };
+  </script>
+</head>
+<body>
+  <button class="back-button" onclick="goBack()">
+    &#x2190;
+  </button>
+
+  <h1>Welcome to ECSD Kiosk Browser</h1>
+
+  <img src="assets/icon.png" class="logo" alt="ECSD Logo">
+
+  <marquee behavior="scroll" direction="left">
+    This is managed by ECSD IT - Please ensure you log out when finished!
+  </marquee>
+
+  <div class="container">
+    <a href="external-app.html?app=https://mail.google.com&name=Gmail">
+      <img src="assets/gmail.png" class="icon" alt="Gmail">
+      <p>Gmail</p>
+    </a>
+    <a href="external-app.html?app=https://www.commonapp.org&name=CommonApp">
+      <img src="assets/commonapp.png" class="icon" alt="CommonApp">
+      <p>CommonApp</p>
+    </a>
+    <a href="external-app.html?app=https://www.yahoo.com&name=Yahoo">
+      <img src="assets/yahoo.png" class="icon" alt="Yahoo">
+      <p>Yahoo</p>
+    </a>
+    <a href="external-app.html?app=https://www.collegeboard.org&name=CollegeBoard">
+      <img src="assets/collegeboard.png" class="icon" alt="CollegeBoard">
+      <p>CollegeBoard</p>
+    </a>
+    <a href="external-app.html?app=https://www.icloud.com&name=iCloud">
+      <img src="assets/icloud.png" class="icon" alt="iCloud">
+      <p>iCloud</p>
+    </a>
+  </div>
+
+  <script>
+    console.log('App page loaded');
+
+    function goBack() {
+      window.history.back();
+    }
+
+    const allowedDomains = ['external-app.html'];
+
+    document.addEventListener('click', function (e) {
+      const target = e.target.closest('a');
+      if (target) {
+        const domain = new URL(target.href).hostname;
+        if (!allowedDomains.includes(domain)) {
+          e.preventDefault();
+          alert('Access to this domain is restricted.');
+        }
+      }
+    });
+  </script>
+</body>
+</html>

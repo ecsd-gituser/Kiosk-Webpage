@@ -1,8 +1,22 @@
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "getManagedConfig") {
-        chrome.storage.managed.get(null, (items) => {
-            sendResponse(items.kiosk_settings || {});
-        });
-        return true; 
+{
+  "name": "ECSD Kiosk APP",
+  "version": "0.1",
+  "manifest_version": 2,
+  "minimum_chrome_version": "37.0.0.0",
+  "permissions": [
+    "webview",
+    "power",
+    "storage",
+    "tabs",
+    "activeTab"
+  ],
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
     }
-});
+  },
+  "kiosk_enabled": true,
+  "icons": {
+    "128": "assets/icon.png"
+  }
+}

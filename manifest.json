@@ -1,29 +1,24 @@
 {
-  "manifest_version": 2,
-  "name": "ECSD Kiosk Browser",
-  "version": "1.0",
-  "description": "A kiosk browser extension for ECSD",
-  "permissions": [
-    "tabs",
-    "activeTab",
-    "storage"
-  ],
-  "background": {
-    "scripts": ["background.js"],
-    "persistent": false
-  },
-  "browser_action": {
-    "default_popup": "index.html",
-    "default_icon": {
-      "16": "assets/icon16.png",
-      "48": "assets/icon48.png",
-      "128": "assets/icon128.png"
-    }
-  },
-  "icons": {
-    "16": "assets/icon16.png",
-    "48": "assets/icon48.png",
-    "128": "assets/icon128.png"
-  },
-  "content_security_policy": "script-src 'self' https://cdnjs.cloudflare.com; object-src 'self'"
+    "manifest_version": 3,
+    "name": "Kiosk App",
+    "version": "1.0",
+    "permissions": ["tabs", "activeTab"],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "index.html"
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"], // or specify specific URLs
+            "js": ["content.js"]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["logout.html"],
+            "matches": ["<all_urls>"]
+        }
+    ]
 }

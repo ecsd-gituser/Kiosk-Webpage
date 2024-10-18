@@ -14,6 +14,18 @@ function checkSession() {
         }
     });
 }
+document.addEventListener("DOMContentLoaded", () => {
+    const loginButton = document.getElementById("loginButton");
+    if (loginButton) {
+        loginButton.addEventListener("click", () => {
+            console.log("Login button clicked");
+            chrome.runtime.sendMessage({ action: "startTimer" });
+            // Redirect to the external app or perform login actions here
+            window.location.href = 'external-app.html'; // Example redirect
+        });
+    }
+});
+
 
 // Start the session when the page loads
 window.onload = function () {

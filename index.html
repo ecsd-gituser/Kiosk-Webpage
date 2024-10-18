@@ -98,7 +98,14 @@
 
             if (enteredOTP === generatedOTP) {
                 console.log('OTP validation successful');
-                window.location.href = 'app.html';
+                if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+                    chrome.runtime.sendMessage({action: "startTimer"}, function(response) {
+                        console.log(response.status);
+                        window.location.href = 'app.html';
+                    });
+                } else {
+                    window.location.href = 'app.html';
+                }
             } else {
                 console.log('OTP validation failed');
                 document.getElementById('error-message').textContent = 'Invalid OTP, please try again.';

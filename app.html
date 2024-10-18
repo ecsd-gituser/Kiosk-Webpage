@@ -51,22 +51,7 @@
       width: 150px;
     }
   </style>
-  <script>
-    const SESSION_TIMEOUT = 60000; // 1 minute in milliseconds
-
-    function checkSessionTimeout() {
-        const sessionStartTime = parseInt(localStorage.getItem('sessionStartTime') || '0');
-        const currentTime = Date.now();
-        if (currentTime - sessionStartTime >= SESSION_TIMEOUT) {
-            window.location.href = 'logout.html';
-        } else {
-            setTimeout(checkSessionTimeout, 1000); // Check every second
-        }
-    }
-
-    window.onload = function() {
-        checkSessionTimeout();
-    };
+  <script src="content.js" defer>
   </script>
 </head>
 <body>

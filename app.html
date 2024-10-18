@@ -91,36 +91,16 @@
   <script>
     console.log('App page loaded');
 
-    let logoutTimer;
-    const DEFAULT_TIMEOUT = 60000; // 1 minute in milliseconds
-
-    function startLogoutTimer(timeout) {
-        clearTimeout(logoutTimer);
-        logoutTimer = setTimeout(() => {
-            window.location.href = 'logout.html';
-        }, timeout);
+    function startLogoutTimer() {
+      if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+        chrome.runtime.sendMessage({action: "startTimer"}, function(response) {
+          console.log(response.status);
+        });
+      }
     }
 
-    function resetLogoutTimer() {
-        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
-            chrome.runtime.sendMessage({action: "getManagedConfig"}, function(response) {
-                const timeout = response && response.idle_timeout_minutes 
-                    ? response.idle_timeout_minutes * 60000 
-                    : DEFAULT_TIMEOUT;
-                startLogoutTimer(timeout);
-            });
-        } else {
-            startLogoutTimer(DEFAULT_TIMEOUT);
-        }
-    }
-
-    // Reset timer on user activity
-    ['click', 'touchstart', 'mousemove'].forEach(evt => 
-        document.addEventListener(evt, resetLogoutTimer, {passive: true})
-    );
-
-    // Initial timer start
-    resetLogoutTimer();
+    // Start the timer when the page loads
+    startLogoutTimer();
 
     const allowedDomains = [
       'mail.google.com',

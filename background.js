@@ -1,6 +1,6 @@
-let sessionTimeout;
 const SESSION_TIMEOUT = 60000; // 1 minute in milliseconds
 let sessionActive = false;
+let sessionTimeout;
 
 chrome.runtime.onInstalled.addListener(() => {
     console.log('Kiosk extension installed');
@@ -15,7 +15,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         endSession();
         sendResponse({ status: "Session ended" });
     } else if (request.action === "checkSession") {
-        sendResponse({ sessionExpired: !sessionActive });
+        sendResponse({ sessionActive });
     }
 });
 
@@ -39,11 +39,9 @@ function endSession() {
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status === 'complete' && tab.url) {
         if (tab.url.includes('index.html')) {
-            // Reset the session when navigating to index.html
             sessionActive = false;
             clearTimeout(sessionTimeout);
         } else if (sessionActive && !tab.url.includes('chrome://') && !tab.url.includes('logout.html')) {
-            // Refresh the timer for other pages only if the session is active
             startSessionTimer();
         }
     }

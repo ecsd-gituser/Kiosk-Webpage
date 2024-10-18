@@ -92,6 +92,10 @@
   <script>
     console.log('App page loaded');
 
+    function goBack() {
+      window.history.back();
+    }
+
     // Check session timeout
     const SESSION_TIMEOUT = 60000; // 1 minute in milliseconds
 
@@ -108,27 +112,6 @@
     window.onload = function() {
       checkSession();
     };
-
-    function goBack() {
-      window.history.back();
-    }
-
-    // Allow any external app to load
-    document.addEventListener('click', function (e) {
-      const target = e.target.closest('a');
-      if (target) {
-        // No restriction on loading external apps
-        // You might want to ensure that only specific URLs are allowed
-        const appUrl = new URL(target.href).searchParams.get('app');
-        if (appUrl) {
-          // Open the external app
-          window.location.href = target.href; // This loads the external app in the current window
-        } else {
-          e.preventDefault();
-          alert('Access to this domain is restricted.');
-        }
-      }
-    });
   </script>
 </body>
 </html>

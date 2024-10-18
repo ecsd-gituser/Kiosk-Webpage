@@ -52,8 +52,32 @@
     }
   </style>
   <script>
+    const SESSION_TIMEOUT = 60000; // 1 minute in milliseconds
+    let externalWindows = [];
+
     function openExternalApp(url) {
-      window.open(url, '_blank');
+      const newWindow = window.open(url, '_blank');
+      externalWindows.push(newWindow); // Store reference to the new window
+    }
+
+    function checkSessionTimeout() {
+      const sessionStartTime = parseInt(localStorage.getItem('sessionStartTime') || '0');
+      const currentTime = Date.now();
+      if (currentTime - sessionStartTime >= SESSION_TIMEOUT) {
+        closeAllWindows();
+        window.location.href = 'logout.html';
+      } else {
+        setTimeout(checkSessionTimeout, 1000); // Check every second
+      }
+    }
+
+    function closeAllWindows() {
+      externalWindows.forEach(win => {
+        if (win && !win.closed) {
+          win.close();
+        }
+      });
+      externalWindows = []; // Clear the array
     }
 
     console.log('App page loaded');
@@ -61,6 +85,11 @@
     function goBack() {
       window.history.back();
     }
+
+    window.onload = function() {
+      localStorage.setItem('sessionStartTime', Date.now()); // Set session start time
+      checkSessionTimeout(); // Start session timeout checking
+    };
   </script>
 </head>
 <body>

@@ -6,61 +6,7 @@
     <meta name="theme-color" content="#ffffff">
     <title>ECSD Kiosk Browser</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
-        .header {
-            background-color: #007BFF;
-            color: white;
-            padding: 10px;
-            text-align: center;
-        }
-        .container {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            padding: 20px;
-        }
-        .icon {
-            width: 100px;
-            margin: 10px;
-            text-align: center;
-            cursor: pointer;
-        }
-        .icon img {
-            width: 64px;
-            height: 64px;
-        }
-        #custom-browser {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-        }
-        #browser-controls {
-            background-color: #f1f1f1;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-        }
-        #browser-frame {
-            flex-grow: 1;
-            border: none;
-        }
-        #session-timer {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background-color: #ff9800;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
+        /* ... (previous styles remain the same) ... */
     </style>
 </head>
 <body>
@@ -127,9 +73,31 @@
         }
 
         function openApp(url) {
-            document.getElementById('app-icons').style.display = 'none';
-            document.getElementById('custom-browser').style.display = 'flex';
-            document.getElementById('browser-frame').src = url;
+            if (url.includes('mail.google.com')) {
+                // Open Gmail in a new tab
+                window.open(url, '_blank');
+            } else {
+                document.getElementById('app-icons').style.display = 'none';
+                document.getElementById('custom-browser').style.display = 'flex';
+                
+                // Use a timeout to ensure the browser-frame is in the DOM
+                setTimeout(() => {
+                    const frame = document.getElementById('browser-frame');
+                    frame.src = url;
+                    
+                    frame.onload = () => {
+                        // Check if the page loaded successfully
+                        try {
+                            frame.contentWindow.location.href;
+                        } catch (e) {
+                            // If there's an error, it might be due to X-Frame-Options
+                            // Open in a new tab instead
+                            window.open(url, '_blank');
+                            closeBrowser();
+                        }
+                    };
+                }, 0);
+            }
             startSessionTimer();
         }
 

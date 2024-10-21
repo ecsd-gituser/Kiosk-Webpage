@@ -1,0 +1,27 @@
+{
+  "name": "ECSD Kiosk Browser",
+  "short_name": "Kiosk Browser",
+  "description": "A kiosk application for accessing Personal emails.",
+  "version": "1.0",
+  "manifest_version": 2,
+  "kiosk_enabled": true,
+  "kiosk_only": true,
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "assets/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "permissions": ["tabs"],
+  "web_accessible_resources": ["app.html", "logout.html"]
+}

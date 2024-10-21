@@ -1,24 +1,12 @@
 {
     "manifest_version": 3,
-    "name": "Kiosk App",
+    "name": "ECSD Kiosk Browser",
     "version": "1.0",
-    "permissions": ["tabs", "activeTab"],
-    "background": {
-        "service_worker": "background.js"
-    },
+    "permissions": ["storage"],
     "action": {
         "default_popup": "index.html"
     },
-    "content_scripts": [
-        {
-            "matches": ["<all_urls>"],
-            "js": ["content.js"]
-        }
-    ],
-    "web_accessible_resources": [
-        {
-            "resources": ["logout.html"],
-            "matches": ["<all_urls>"]
-        }
-    ]
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'"
+    }
 }

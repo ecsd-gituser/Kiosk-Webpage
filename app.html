@@ -4,39 +4,147 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#ffffff">
-    <title>ECSD Kiosk Browser</title>
+    <title>Welcome to ECSD Kiosk Browser</title>
     <style>
-        /* ... (previous styles remain the same) ... */
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .icon {
+            width: 100px;
+            margin: 20px;
+            transition: transform 0.2s;
+        }
+        .icon:hover {
+            transform: scale(1.1);
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            font-size: 24px;
+            background: transparent;
+            border: none;
+            color: #007BFF;
+        }
+        marquee {
+            background-color: #e7f3fe;
+            color: #31708f;
+            font-size: 18px;
+            padding: 10px;
+            margin-top: 20px;
+            border: 1px solid #bce8f1;
+            border-radius: 5px;
+        }
+        .logo {
+            width: 150px;
+        }
+        #app-container {
+            flex-grow: 1;
+            display: none;
+            width: 100%;
+            height: calc(100% - 200px);
+        }
+        #custom-browser {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+        #browser-controls {
+            background-color: #f1f1f1;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        #browser-frame {
+            flex-grow: 1;
+            border: none;
+        }
+        #timeout-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #ff9800;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            display: none;
+            z-index: 1000;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        p {
+            margin-top: 5px;
+        }
+        #session-timer {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #ff9800;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>ECSD Kiosk Browser</h1>
-    </div>
+    <div id="timeout-warning">Your session will expire in <span id="countdown">60</span> seconds.</div>
+
+    <button class="back-button" onclick="goBack()">
+        &#x2190;
+    </button>
+
+    <h1>Welcome to ECSD Kiosk Browser</h1>
+
+    <img src="assets/icon.png" class="logo" alt="ECSD Logo">
+
+    <marquee behavior="scroll" direction="left">
+        This is managed by ECSD IT - Please ensure you log out when finished!
+    </marquee>
 
     <div id="session-timer">Session ends in: <span id="countdown">60</span>s</div>
 
     <div class="container" id="app-icons">
-        <div class="icon" onclick="openApp('https://mail.google.com')">
-            <img src="assets/gmail.png" alt="Gmail">
+        <a href="javascript:void(0);" onclick="openApp('https://mail.google.com', 'Gmail')">
+            <img src="assets/gmail.png" class="icon" alt="Gmail">
             <p>Gmail</p>
-        </div>
-        <div class="icon" onclick="openApp('https://www.commonapp.org')">
-            <img src="assets/commonapp.png" alt="CommonApp">
+        </a>
+        <a href="javascript:void(0);" onclick="openApp('https://www.commonapp.org', 'CommonApp')">
+            <img src="assets/commonapp.png" class="icon" alt="CommonApp">
             <p>CommonApp</p>
-        </div>
-        <div class="icon" onclick="openApp('https://www.yahoo.com')">
-            <img src="assets/yahoo.png" alt="Yahoo">
+        </a>
+        <a href="javascript:void(0);" onclick="openApp('https://www.yahoo.com', 'Yahoo')">
+            <img src="assets/yahoo.png" class="icon" alt="Yahoo">
             <p>Yahoo</p>
-        </div>
-        <div class="icon" onclick="openApp('https://www.collegeboard.org')">
-            <img src="assets/collegeboard.png" alt="CollegeBoard">
+        </a>
+        <a href="javascript:void(0);" onclick="openApp('https://www.collegeboard.org', 'CollegeBoard')">
+            <img src="assets/collegeboard.png" class="icon" alt="CollegeBoard">
             <p>CollegeBoard</p>
-        </div>
-        <div class="icon" onclick="openApp('https://www.icloud.com')">
-            <img src="assets/icloud.png" alt="iCloud">
+        </a>
+        <a href="javascript:void(0);" onclick="openApp('https://www.icloud.com', 'iCloud')">
+            <img src="assets/icloud.png" class="icon" alt="iCloud">
             <p>iCloud</p>
-        </div>
+        </a>
     </div>
 
     <div id="custom-browser">
@@ -72,7 +180,7 @@
             document.getElementById('countdown').textContent = seconds;
         }
 
-        function openApp(url) {
+        function openApp(url, name) {
             if (url.includes('mail.google.com')) {
                 // Open Gmail in a new tab
                 window.open(url, '_blank');
@@ -117,6 +225,10 @@
         function logout() {
             resetSessionTimer();
             window.location.href = 'logout.html';
+        }
+
+        function goBack() {
+            closeBrowser();
         }
 
         // Initialize the session timer when the page loads

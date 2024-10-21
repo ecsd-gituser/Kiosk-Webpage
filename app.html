@@ -59,6 +59,11 @@
       width: 100%;
       height: calc(100% - 200px);
     }
+    webview {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
     #timeout-warning {
       position: fixed;
       top: 0;
@@ -69,6 +74,17 @@
       text-align: center;
       padding: 10px;
       display: none;
+      z-index: 1000;
+    }
+    h1 {
+      margin-top: 20px;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    p {
+      margin-top: 5px;
     }
   </style>
 </head>
@@ -111,7 +127,7 @@
   </div>
 
   <div id="app-container">
-    <iframe id="app-frame" src="" style="width:100%; height:100%; border:none;"></iframe>
+    <webview id="app-webview" src="about:blank" partition="persist:kiosk"></webview>
   </div>
 
   <script>
@@ -122,7 +138,8 @@
     function openExternalApp(url, name) {
       document.getElementById('app-icons').style.display = 'none';
       document.getElementById('app-container').style.display = 'block';
-      document.getElementById('app-frame').src = url;
+      const webview = document.getElementById('app-webview');
+      webview.src = url;
       resetIdleTimer();
     }
 
@@ -156,7 +173,7 @@
     function goBack() {
       document.getElementById('app-container').style.display = 'none';
       document.getElementById('app-icons').style.display = 'flex';
-      document.getElementById('app-frame').src = '';
+      document.getElementById('app-webview').src = 'about:blank';
       resetIdleTimer();
     }
 
@@ -170,6 +187,23 @@
 
     window.onload = function() {
       localStorage.setItem('sessionStartTime', Date.now());
+      
+      const webview = document.getElementById('app-webview');
+      webview.addEventListener('loadstart', resetIdleTimer);
+      webview.addEventListener('loadstop', resetIdleTimer);
+
+      // Prevent new window creation
+      webview.addEventListener('newwindow', (e) => {
+        e.preventDefault();
+        webview.src = e.targetUrl;
+      });
+
+      // Handle permission requests
+      webview.addEventListener('permissionrequest', (e) => {
+        if (e.permission === 'media') {
+          e.request.allow();
+        }
+      });
     };
   </script>
 </body>

@@ -73,6 +73,8 @@
         #browser-frame {
             flex-grow: 1;
             border: none;
+            width: 100%;
+            height: calc(100% - 50px);
         }
         #timeout-warning {
             position: fixed;
@@ -181,25 +183,21 @@
         }
 
         function openApp(url, name) {
-            if (url.includes('mail.google.com')) {
-                // Open Gmail in a new tab
+            if (url.includes('google.com') || url.includes('yahoo.com') || url.includes('icloud.com')) {
+                // Open these services in a new tab
                 window.open(url, '_blank');
             } else {
                 document.getElementById('app-icons').style.display = 'none';
                 document.getElementById('custom-browser').style.display = 'flex';
                 
-                // Use a timeout to ensure the browser-frame is in the DOM
                 setTimeout(() => {
                     const frame = document.getElementById('browser-frame');
                     frame.src = url;
                     
                     frame.onload = () => {
-                        // Check if the page loaded successfully
                         try {
                             frame.contentWindow.location.href;
                         } catch (e) {
-                            // If there's an error, it might be due to X-Frame-Options
-                            // Open in a new tab instead
                             window.open(url, '_blank');
                             closeBrowser();
                         }
@@ -231,7 +229,6 @@
             closeBrowser();
         }
 
-        // Initialize the session timer when the page loads
         window.onload = function() {
             startSessionTimer();
         };

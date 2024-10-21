@@ -4,99 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#ffffff">
-    <title>Welcome to ECSD Kiosk Browser</title>
+    <title>ECSD Kiosk Browser</title>
     <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
+        body, html {
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+        #app-container {
             display: flex;
             flex-direction: column;
             height: 100vh;
         }
-        .icon {
-            width: 100px;
-            margin: 20px;
-            transition: transform 0.2s;
-        }
-        .icon:hover {
-            transform: scale(1.1);
-        }
-        .container {
+        #browser-tabs {
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-        .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            cursor: pointer;
-            font-size: 24px;
-            background: transparent;
-            border: none;
-            color: #007BFF;
-        }
-        marquee {
-            background-color: #e7f3fe;
-            color: #31708f;
-            font-size: 18px;
-            padding: 10px;
-            margin-top: 20px;
-            border: 1px solid #bce8f1;
-            border-radius: 5px;
-        }
-        .logo {
-            width: 150px;
-        }
-        #app-container {
-            flex-grow: 1;
-            display: none;
-            width: 100%;
-            height: calc(100% - 200px);
-        }
-        #custom-browser {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-        }
-        #browser-controls {
             background-color: #f1f1f1;
             padding: 10px;
-            display: flex;
-            justify-content: space-between;
         }
-        #browser-frame {
-            flex-grow: 1;
-            border: none;
-            width: 100%;
-            height: calc(100% - 50px);
-        }
-        #timeout-warning {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background-color: #ff9800;
-            color: white;
-            text-align: center;
+        .tab {
             padding: 10px;
-            display: none;
-            z-index: 1000;
+            margin-right: 5px;
+            background-color: #ddd;
+            cursor: pointer;
         }
-        h1 {
-            margin-top: 20px;
+        .tab.active {
+            background-color: #fff;
         }
-        a {
-            text-decoration: none;
-            color: inherit;
+        #browser-content {
+            flex-grow: 1;
+            display: flex;
         }
-        p {
-            margin-top: 5px;
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        #home-content {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .icon {
+            width: 64px;
+            margin: 10px;
+            cursor: pointer;
         }
         #session-timer {
             position: fixed;
@@ -107,60 +61,42 @@
             padding: 5px 10px;
             border-radius: 5px;
         }
+        #new-tab-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <div id="timeout-warning">Your session will expire in <span id="countdown">60</span> seconds.</div>
-
-    <button class="back-button" onclick="goBack()">
-        &#x2190;
-    </button>
-
-    <h1>Welcome to ECSD Kiosk Browser</h1>
-
-    <img src="assets/icon.png" class="logo" alt="ECSD Logo">
-
-    <marquee behavior="scroll" direction="left">
-        This is managed by ECSD IT - Please ensure you log out when finished!
-    </marquee>
-
-    <div id="session-timer">Session ends in: <span id="countdown">60</span>s</div>
-
-    <div class="container" id="app-icons">
-        <a href="javascript:void(0);" onclick="openApp('https://mail.google.com', 'Gmail')">
-            <img src="assets/gmail.png" class="icon" alt="Gmail">
-            <p>Gmail</p>
-        </a>
-        <a href="javascript:void(0);" onclick="openApp('https://www.commonapp.org', 'CommonApp')">
-            <img src="assets/commonapp.png" class="icon" alt="CommonApp">
-            <p>CommonApp</p>
-        </a>
-        <a href="javascript:void(0);" onclick="openApp('https://www.yahoo.com', 'Yahoo')">
-            <img src="assets/yahoo.png" class="icon" alt="Yahoo">
-            <p>Yahoo</p>
-        </a>
-        <a href="javascript:void(0);" onclick="openApp('https://www.collegeboard.org', 'CollegeBoard')">
-            <img src="assets/collegeboard.png" class="icon" alt="CollegeBoard">
-            <p>CollegeBoard</p>
-        </a>
-        <a href="javascript:void(0);" onclick="openApp('https://www.icloud.com', 'iCloud')">
-            <img src="assets/icloud.png" class="icon" alt="iCloud">
-            <p>iCloud</p>
-        </a>
-    </div>
-
-    <div id="custom-browser">
-        <div id="browser-controls">
-            <button onclick="closeBrowser()">Close</button>
-            <button onclick="logout()">Logout</button>
+    <div id="app-container">
+        <div id="browser-tabs">
+            <div class="tab active" data-tab="home">Home</div>
+            <button id="new-tab-button">+</button>
         </div>
-        <iframe id="browser-frame" src="about:blank"></iframe>
+        <div id="browser-content">
+            <div id="home-content">
+                <h1>Welcome to ECSD Kiosk Browser</h1>
+                <div id="app-icons">
+                    <img src="assets/gmail.png" class="icon" alt="Gmail" onclick="openApp('https://mail.google.com', 'Gmail')">
+                    <img src="assets/commonapp.png" class="icon" alt="CommonApp" onclick="openApp('https://www.commonapp.org', 'CommonApp')">
+                    <img src="assets/yahoo.png" class="icon" alt="Yahoo" onclick="openApp('https://www.yahoo.com', 'Yahoo')">
+                    <img src="assets/collegeboard.png" class="icon" alt="CollegeBoard" onclick="openApp('https://www.collegeboard.org', 'CollegeBoard')">
+                    <img src="assets/icloud.png" class="icon" alt="iCloud" onclick="openApp('https://www.icloud.com', 'iCloud')">
+                </div>
+            </div>
+        </div>
     </div>
+    <div id="session-timer">Session ends in: <span id="countdown">60</span>s</div>
 
     <script>
         const SESSION_TIMEOUT = 60000; // 1 minute in milliseconds
         let sessionTimer;
         let countdownInterval;
+        let tabs = [{id: 'home', title: 'Home', url: ''}];
+        let activeTabId = 'home';
 
         function startSessionTimer() {
             const startTime = Date.now();
@@ -183,51 +119,49 @@
         }
 
         function openApp(url, name) {
-            if (url.includes('google.com') || url.includes('yahoo.com') || url.includes('icloud.com')) {
-                // Open these services in a new tab
-                window.open(url, '_blank');
-            } else {
-                document.getElementById('app-icons').style.display = 'none';
-                document.getElementById('custom-browser').style.display = 'flex';
-                
-                setTimeout(() => {
-                    const frame = document.getElementById('browser-frame');
-                    frame.src = url;
-                    
-                    frame.onload = () => {
-                        try {
-                            frame.contentWindow.location.href;
-                        } catch (e) {
-                            window.open(url, '_blank');
-                            closeBrowser();
-                        }
-                    };
-                }, 0);
-            }
-            startSessionTimer();
+            createNewTab(url, name);
+            resetSessionTimer();
         }
 
-        function closeBrowser() {
-            document.getElementById('browser-frame').src = 'about:blank';
-            document.getElementById('custom-browser').style.display = 'none';
-            document.getElementById('app-icons').style.display = 'flex';
-            resetSessionTimer();
+        function createNewTab(url, name) {
+            const tabId = 'tab-' + Date.now();
+            tabs.push({id: tabId, title: name || 'New Tab', url: url});
+            const tabElement = document.createElement('div');
+            tabElement.className = 'tab';
+            tabElement.textContent = name || 'New Tab';
+            tabElement.dataset.tab = tabId;
+            tabElement.onclick = () => activateTab(tabId);
+            document.getElementById('browser-tabs').insertBefore(tabElement, document.getElementById('new-tab-button'));
+            activateTab(tabId);
+        }
+
+        function activateTab(tabId) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+            const browserContent = document.getElementById('browser-content');
+            browserContent.innerHTML = '';
+            if (tabId === 'home') {
+                browserContent.appendChild(document.getElementById('home-content'));
+            } else {
+                const iframe = document.createElement('iframe');
+                iframe.src = tabs.find(tab => tab.id === tabId).url;
+                browserContent.appendChild(iframe);
+            }
+            activeTabId = tabId;
         }
 
         function resetSessionTimer() {
             clearTimeout(sessionTimer);
             clearInterval(countdownInterval);
-            document.getElementById('countdown').textContent = '60';
+            startSessionTimer();
         }
 
         function logout() {
-            resetSessionTimer();
+            alert('Session expired. Logging out...');
             window.location.href = 'logout.html';
         }
 
-        function goBack() {
-            closeBrowser();
-        }
+        document.getElementById('new-tab-button').onclick = () => createNewTab('about:blank');
 
         window.onload = function() {
             startSessionTimer();

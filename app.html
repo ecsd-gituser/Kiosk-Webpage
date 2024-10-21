@@ -13,6 +13,9 @@
       padding: 0;
       background-color: #f4f4f4;
       color: #333;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
     .icon {
       width: 100px;
@@ -50,49 +53,28 @@
     .logo {
       width: 150px;
     }
+    #app-container {
+      flex-grow: 1;
+      display: none;
+      width: 100%;
+      height: calc(100% - 200px);
+    }
+    #timeout-warning {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: #ff9800;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      display: none;
+    }
   </style>
-  <script>
-    const SESSION_TIMEOUT = 60000; // 1 minute in milliseconds
-    let externalWindows = [];
-
-    function openExternalApp(url) {
-      const newWindow = window.open(url, '_blank');
-      externalWindows.push(newWindow); // Store reference to the new window
-    }
-
-    function checkSessionTimeout() {
-      const sessionStartTime = parseInt(localStorage.getItem('sessionStartTime') || '0');
-      const currentTime = Date.now();
-      if (currentTime - sessionStartTime >= SESSION_TIMEOUT) {
-        closeAllWindows();
-        window.location.href = 'logout.html';
-      } else {
-        setTimeout(checkSessionTimeout, 1000); // Check every second
-      }
-    }
-
-    function closeAllWindows() {
-      externalWindows.forEach(win => {
-        if (win && !win.closed) {
-          win.close();
-        }
-      });
-      externalWindows = []; // Clear the array
-    }
-
-    console.log('App page loaded');
-
-    function goBack() {
-      window.history.back();
-    }
-
-    window.onload = function() {
-      localStorage.setItem('sessionStartTime', Date.now()); // Set session start time
-      checkSessionTimeout(); // Start session timeout checking
-    };
-  </script>
 </head>
 <body>
+  <div id="timeout-warning">Your session will expire in <span id="countdown">60</span> seconds.</div>
+
   <button class="back-button" onclick="goBack()">
     &#x2190;
   </button>
@@ -105,27 +87,90 @@
     This is managed by ECSD IT - Please ensure you log out when finished!
   </marquee>
 
-  <div class="container">
-    <a href="javascript:void(0);" onclick="openExternalApp('https://mail.google.com')">
+  <div class="container" id="app-icons">
+    <a href="javascript:void(0);" onclick="openExternalApp('https://mail.google.com', 'Gmail')">
       <img src="assets/gmail.png" class="icon" alt="Gmail">
       <p>Gmail</p>
     </a>
-    <a href="javascript:void(0);" onclick="openExternalApp('https://www.commonapp.org')">
+    <a href="javascript:void(0);" onclick="openExternalApp('https://www.commonapp.org', 'CommonApp')">
       <img src="assets/commonapp.png" class="icon" alt="CommonApp">
       <p>CommonApp</p>
     </a>
-    <a href="javascript:void(0);" onclick="openExternalApp('https://www.yahoo.com')">
+    <a href="javascript:void(0);" onclick="openExternalApp('https://www.yahoo.com', 'Yahoo')">
       <img src="assets/yahoo.png" class="icon" alt="Yahoo">
       <p>Yahoo</p>
     </a>
-    <a href="javascript:void(0);" onclick="openExternalApp('https://www.collegeboard.org')">
+    <a href="javascript:void(0);" onclick="openExternalApp('https://www.collegeboard.org', 'CollegeBoard')">
       <img src="assets/collegeboard.png" class="icon" alt="CollegeBoard">
       <p>CollegeBoard</p>
     </a>
-    <a href="javascript:void(0);" onclick="openExternalApp('https://www.icloud.com')">
+    <a href="javascript:void(0);" onclick="openExternalApp('https://www.icloud.com', 'iCloud')">
       <img src="assets/icloud.png" class="icon" alt="iCloud">
       <p>iCloud</p>
     </a>
   </div>
+
+  <div id="app-container">
+    <iframe id="app-frame" src="" style="width:100%; height:100%; border:none;"></iframe>
+  </div>
+
+  <script>
+    const SESSION_TIMEOUT = 60000; // 1 minute in milliseconds
+    let idleTimer;
+    let countdownTimer;
+
+    function openExternalApp(url, name) {
+      document.getElementById('app-icons').style.display = 'none';
+      document.getElementById('app-container').style.display = 'block';
+      document.getElementById('app-frame').src = url;
+      resetIdleTimer();
+    }
+
+    function resetIdleTimer() {
+      clearTimeout(idleTimer);
+      clearInterval(countdownTimer);
+      document.getElementById('timeout-warning').style.display = 'none';
+
+      idleTimer = setTimeout(showWarning, SESSION_TIMEOUT - 10000); // Show warning 10 seconds before timeout
+    }
+
+    function showWarning() {
+      document.getElementById('timeout-warning').style.display = 'block';
+      let secondsLeft = 10;
+      
+      countdownTimer = setInterval(() => {
+        secondsLeft--;
+        document.getElementById('countdown').textContent = secondsLeft;
+        
+        if (secondsLeft <= 0) {
+          clearInterval(countdownTimer);
+          logout();
+        }
+      }, 1000);
+    }
+
+    function logout() {
+      window.location.href = 'logout.html';
+    }
+
+    function goBack() {
+      document.getElementById('app-container').style.display = 'none';
+      document.getElementById('app-icons').style.display = 'flex';
+      document.getElementById('app-frame').src = '';
+      resetIdleTimer();
+    }
+
+    // Reset timer on user activity
+    ['click', 'touchstart', 'mousemove', 'keypress'].forEach(evt => 
+      document.addEventListener(evt, resetIdleTimer, {passive: true})
+    );
+
+    // Initial timer start
+    resetIdleTimer();
+
+    window.onload = function() {
+      localStorage.setItem('sessionStartTime', Date.now());
+    };
+  </script>
 </body>
 </html>

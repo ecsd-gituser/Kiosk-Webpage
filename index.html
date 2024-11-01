@@ -59,6 +59,13 @@
             margin-top: 10px;
         }
     </style>
+    <script>
+        // Prevent going back
+        history.pushState(null, null, document.URL);
+        window.addEventListener('popstate', function () {
+            history.pushState(null, null, document.URL);
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -85,7 +92,9 @@
             const generatedOTP = generateTOTP(secretKey);
 
             if (enteredOTP === generatedOTP) {
-                window.location.href = 'app.html';
+                // Use replaceState instead of changing location
+                history.replaceState(null, '', 'app.html');
+                window.location.reload();
             } else {
                 document.getElementById('error-message').textContent = 'Invalid OTP, please try again.';
             }

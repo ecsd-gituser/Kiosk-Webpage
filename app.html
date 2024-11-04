@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#007BFF">
   <title>Welcome to ECSD Kiosk Browser</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary-color: #007BFF;
@@ -47,18 +47,19 @@
     }
 
     .logo, .side-logo {
-      height: 80px;
+      height: 100px;
       width: auto;
       object-fit: contain;
     }
 
     .logo {
-      margin: 0 20px;
+      margin: 0 30px;
+      height: 120px;
     }
 
     .icon-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 30px;
       justify-items: center;
       margin-top: 40px;
@@ -69,10 +70,14 @@
       color: var(--text-color);
       text-align: center;
       transition: transform var(--transition-speed) ease-in-out;
-      padding: 15px;
-      border-radius: 10px;
+      padding: 20px;
+      border-radius: 15px;
       background-color: white;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
     }
 
     .icon-link:hover {
@@ -80,10 +85,17 @@
     }
 
     .icon {
-      width: 60px;
-      height: 60px;
-      margin-bottom: 10px;
+      width: 70px;
+      height: 70px;
+      margin-bottom: 15px;
       object-fit: contain;
+    }
+
+    .icon-text {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin: 0;
     }
 
     .back-button {
@@ -158,25 +170,25 @@
     </div>
 
     <div class="icon-grid">
-      <a href="https://mail.google.com" class="icon-link">
+      <a href="https://mail.google.com" class="icon-link" style="background: linear-gradient(135deg, #DB4437 0%, #F4B400 100%);">
         <img src="assets/gmail.png" class="icon" alt="Gmail">
-        <p>Gmail</p>
+        <p class="icon-text" style="color: white;">Gmail</p>
       </a>
-      <a href="https://www.commonapp.org" class="icon-link">
+      <a href="https://www.commonapp.org" class="icon-link" style="background: linear-gradient(135deg, #006699 0%, #00A0E3 100%);">
         <img src="assets/commonapp.png" class="icon" alt="CommonApp">
-        <p>CommonApp</p>
+        <p class="icon-text" style="color: white;">CommonApp</p>
       </a>
-      <a href="https://www.yahoo.com" class="icon-link">
+      <a href="https://www.yahoo.com" class="icon-link" style="background: linear-gradient(135deg, #720E9E 0%, #410093 100%);">
         <img src="assets/yahoo.png" class="icon" alt="Yahoo">
-        <p>Yahoo</p>
+        <p class="icon-text" style="color: white;">Yahoo</p>
       </a>
-      <a href="https://www.collegeboard.org" class="icon-link">
+      <a href="https://www.collegeboard.org" class="icon-link" style="background: linear-gradient(135deg, #00A0E3 0%, #0077C5 100%);">
         <img src="assets/collegeboard.png" class="icon" alt="CollegeBoard">
-        <p>CollegeBoard</p>
+        <p class="icon-text" style="color: white;">CollegeBoard</p>
       </a>
-      <a href="https://www.icloud.com" class="icon-link">
+      <a href="https://www.icloud.com" class="icon-link" style="background: linear-gradient(135deg, #1BADF8 0%, #0080FF 100%);">
         <img src="assets/icloud.png" class="icon" alt="iCloud">
-        <p>iCloud</p>
+        <p class="icon-text" style="color: white;">iCloud</p>
       </a>
     </div>
   </div>

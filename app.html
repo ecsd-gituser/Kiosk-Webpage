@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#007BFF">
-  <title>Welcome to ECSD Kiosk Browser</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#0056b3">
+  <title>ECSD Kiosk Browser</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary-color: #007BFF;
-      --secondary-color: #31708f;
-      --background-color: #f8f9fa;
+      --primary-color: #0056b3;
+      --secondary-color: #004085;
+      --background-color: #f0f4f8;
       --text-color: #333;
-      --hover-scale: 1.05;
+      --hover-scale: 1.03;
       --transition-speed: 0.3s;
     }
 
     body {
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Open Sans', sans-serif;
       margin: 0;
       padding: 0;
       background-color: var(--background-color);
@@ -28,22 +28,36 @@
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 40px 20px;
+    }
+
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 20px 0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     h1 {
+      font-family: 'Montserrat', sans-serif;
       text-align: center;
-      color: var(--primary-color);
-      margin-bottom: 30px;
+      color: white;
+      margin: 0;
       font-weight: 700;
       font-size: 2.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .logo-container {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 30px 0;
+      margin: 40px 0;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     }
 
     .logo, .side-logo {
@@ -53,13 +67,13 @@
     }
 
     .logo {
-      margin: 0 30px;
+      margin: 0 40px;
       height: 120px;
     }
 
     .icon-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 30px;
       justify-items: center;
       margin-top: 40px;
@@ -69,33 +83,37 @@
       text-decoration: none;
       color: var(--text-color);
       text-align: center;
-      transition: transform var(--transition-speed) ease-in-out;
-      padding: 20px;
+      transition: all var(--transition-speed) ease-in-out;
+      padding: 25px;
       border-radius: 15px;
       background-color: white;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-direction: column;
       align-items: center;
       width: 100%;
+      border: 2px solid transparent;
     }
 
     .icon-link:hover {
       transform: scale(var(--hover-scale));
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      border-color: var(--primary-color);
     }
 
     .icon {
-      width: 70px;
-      height: 70px;
-      margin-bottom: 15px;
+      width: 80px;
+      height: 80px;
+      margin-bottom: 20px;
       object-fit: contain;
     }
 
     .icon-text {
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-weight: 600;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       margin: 0;
+      color: var(--primary-color);
     }
 
     .back-button {
@@ -104,29 +122,33 @@
       left: 20px;
       cursor: pointer;
       font-size: 24px;
-      background: transparent;
+      background: rgba(255, 255, 255, 0.2);
       border: none;
-      color: var(--primary-color);
-      transition: color var(--transition-speed);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 50%;
+      transition: all var(--transition-speed);
     }
 
     .back-button:hover {
-      color: var(--secondary-color);
+      background: rgba(255, 255, 255, 0.3);
     }
 
     .marquee-container {
-      background-color: #e7f3fe;
-      color: var(--secondary-color);
-      padding: 10px;
-      margin-top: 20px;
-      border-radius: 5px;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 15px;
+      margin-top: 40px;
+      border-radius: 8px;
       overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .marquee-content {
       display: inline-block;
       white-space: nowrap;
-      animation: marquee 20s linear infinite;
+      animation: marquee 30s linear infinite;
+      font-size: 1.1rem;
     }
 
     @keyframes marquee {
@@ -150,46 +172,47 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <header>
     <button class="back-button" onclick="goBack()" aria-label="Go back">
       &#x2190;
     </button>
+    <h1>ECSD Kiosk Browser</h1>
+  </header>
 
-    <h1>Welcome to ECSD Kiosk Browser</h1>
-
+  <div class="container">
     <div class="logo-container">
       <img src="assets/VSSA.png" class="side-logo" alt="VSSA Logo">
       <img src="assets/icon.png" class="logo" alt="ECSD Logo">
       <img src="assets/VSSA.png" class="side-logo" alt="VSSA Logo">
     </div>
 
+    <div class="icon-grid">
+      <a href="https://mail.google.com" class="icon-link">
+        <img src="assets/gmail.png" class="icon" alt="Gmail">
+        <p class="icon-text">Gmail</p>
+      </a>
+      <a href="https://www.commonapp.org" class="icon-link">
+        <img src="assets/commonapp.png" class="icon" alt="CommonApp">
+        <p class="icon-text">CommonApp</p>
+      </a>
+      <a href="https://www.yahoo.com" class="icon-link">
+        <img src="assets/yahoo.png" class="icon" alt="Yahoo">
+        <p class="icon-text">Yahoo</p>
+      </a>
+      <a href="https://www.collegeboard.org" class="icon-link">
+        <img src="assets/collegeboard.png" class="icon" alt="CollegeBoard">
+        <p class="icon-text">CollegeBoard</p>
+      </a>
+      <a href="https://www.icloud.com" class="icon-link">
+        <img src="assets/icloud.png" class="icon" alt="iCloud">
+        <p class="icon-text">iCloud</p>
+      </a>
+    </div>
+
     <div class="marquee-container">
       <div class="marquee-content">
         This is managed by ECSD IT - Please ensure you log out when finished!
       </div>
-    </div>
-
-    <div class="icon-grid">
-      <a href="https://mail.google.com" class="icon-link" style="background: linear-gradient(135deg, #DB4437 0%, #F4B400 100%);">
-        <img src="assets/gmail.png" class="icon" alt="Gmail">
-        <p class="icon-text" style="color: white;">Gmail</p>
-      </a>
-      <a href="https://www.commonapp.org" class="icon-link" style="background: linear-gradient(135deg, #006699 0%, #00A0E3 100%);">
-        <img src="assets/commonapp.png" class="icon" alt="CommonApp">
-        <p class="icon-text" style="color: white;">CommonApp</p>
-      </a>
-      <a href="https://www.yahoo.com" class="icon-link" style="background: linear-gradient(135deg, #720E9E 0%, #410093 100%);">
-        <img src="assets/yahoo.png" class="icon" alt="Yahoo">
-        <p class="icon-text" style="color: white;">Yahoo</p>
-      </a>
-      <a href="https://www.collegeboard.org" class="icon-link" style="background: linear-gradient(135deg, #00A0E3 0%, #0077C5 100%);">
-        <img src="assets/collegeboard.png" class="icon" alt="CollegeBoard">
-        <p class="icon-text" style="color: white;">CollegeBoard</p>
-      </a>
-      <a href="https://www.icloud.com" class="icon-link" style="background: linear-gradient(135deg, #1BADF8 0%, #0080FF 100%);">
-        <img src="assets/icloud.png" class="icon" alt="iCloud">
-        <p class="icon-text" style="color: white;">iCloud</p>
-      </a>
     </div>
   </div>
 
